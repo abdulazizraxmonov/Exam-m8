@@ -32,9 +32,25 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'django_filters',
+    'ckeditor',
+    'ckeditor_uploader',
     #my_apps
     'users',
+    'app_requirement',
+    'app_faq',
+    'app_contact',
 ]
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -43,7 +59,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 1  
+    'PAGE_SIZE': 10 
 }
 
 MIDDLEWARE = [

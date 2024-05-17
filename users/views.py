@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.conf import settings
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import get_user_model
@@ -96,17 +97,17 @@ class PasswordResetView(generics.GenericAPIView):
         if user:
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_link = f"http://localhost:8000/reset/{uid}/{token}/"  # Замените localhost на ваш домен
+            reset_link = f"http://localhost:8000/reset/{uid}/{token}/"  # Replace localhost with your domain
             send_mail(
-                'reset password',
+                'Reset password',
                 f'Link: {reset_link}',
-                '@example.com',  
+                settings.EMAIL_HOST_USER,  # Use the sender email address from settings
                 [email],
                 fail_silently=False,
             )
-            return Response({'message': 'sended'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Email sent successfully'}, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'bunday email mavjud emas'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'User not found for the provided email'}, status=status.HTTP_404_NOT_FOUND)
 
 
 
