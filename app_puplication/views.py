@@ -21,6 +21,11 @@ class PublicationViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by('-last_edit')
         return queryset
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -46,6 +51,11 @@ class TagViewSet(viewsets.ModelViewSet):
     search_fields = ['name_uz', 'name_ru', 'name_en']
     ordering_fields = ['name_uz', 'name_ru', 'name_en']
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -70,6 +80,11 @@ class PublicationDetailViewSet(viewsets.ModelViewSet):
     filterset_fields = ['publication', 'description_uz', 'description_ru', 'description_en', 'tags']
     search_fields = ['description_uz', 'description_ru', 'description_en', 'publication_text']
     ordering_fields = ['publication', 'description_uz', 'description_ru', 'description_en']
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

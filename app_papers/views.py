@@ -10,9 +10,7 @@ import uuid
 from django.db.models import F
 from datetime import datetime, timedelta, timezone
 from django.utils import timezone as django_timezone
-from rest_framework import filters
 from rest_framework.filters import SearchFilter, OrderingFilter
-
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -33,6 +31,11 @@ class PapersCategoryViewSet(viewsets.ModelViewSet):
             permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
+
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
 
@@ -52,15 +55,20 @@ class PapersViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         ordering = self.request.query_params.get('ordering', None)
         if ordering == 'count':
-            queryset = queryset.annotate(views_count=F('count')).order_by('-count')  
+            queryset = queryset.annotate(views_count=F('count')).order_by('-count')
         return queryset
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         user_id = request.COOKIES.get('user_id')
 
         if not user_id:
-            user_id = generate_user_id() 
+            user_id = generate_user_id()
             response = Response('New user', status=status.HTTP_201_CREATED)
             response.set_cookie('user_id', user_id)
         else:
@@ -86,7 +94,6 @@ class PapersViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return response
 
-    
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
@@ -106,8 +113,13 @@ class PapersDetailViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
         else:
-            permission_classes = [permissions.AllowAny] 
+            permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
@@ -121,8 +133,13 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
         else:
-            permission_classes = [permissions.AllowAny] 
+            permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
@@ -136,8 +153,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
         else:
-            permission_classes = [permissions.AllowAny] 
+            permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
@@ -146,13 +168,18 @@ class ArticleViewSet(viewsets.ModelViewSet):
 class KeywordsViewSet(viewsets.ModelViewSet):
     queryset = Keywords.objects.all()
     serializer_class = KeywordsSerializer
-        
+
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
         else:
-            permission_classes = [permissions.AllowAny] 
+            permission_classes = [permissions.AllowAny]
         return [permission() for permission in permission_classes]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['lang'] = self.request.GET.get('lang', 'uz')
+        return context
 
     def perform_create(self, serializer):
         serializer.save(added_by=self.request.user)
