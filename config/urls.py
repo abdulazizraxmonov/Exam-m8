@@ -29,6 +29,8 @@ urlpatterns = [
     path('api/', include('app_requirement.urls')),
     path('api/', include('app_faq.urls')),
     path('api/', include('app_contact.urls')),
+    path('api/', include('app_puplication.urls')),
+    path('api/', include('app_papers.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

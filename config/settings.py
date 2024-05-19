@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'app_requirement',
     'app_faq',
     'app_contact',
+    'app_puplication',
+    'app_papers',
 ]
 
 
